@@ -246,13 +246,14 @@
 <script>
   const CONFIG = {
     // --- الصفحة الأولى ---
-    name:      " merna❤️ جاهزه ",          // الاسم جوه القلب
+    name:       "جاهزه 😜",          // الاسم جوه القلب
     sub:        "my everything",      // النص تحت الاسم
-    password:   "2009",               // الباسورد
+    password:   "1234",               // الباسورد
     profileImg: "",                   // مسار صورة البروفايل مثلاً: "img/profile.jpg"
 
     // --- رسالة الحب ---
-    loveMsg: 'بحبك يكل حاجه في حياتي و عمري م اقدر اعيش من غيرك تعالي نفتكر كل حاجه بينا هنا ونبدء بدايه جديده`,
+    loveMsg: `بحبك يكل حاجه في حياتي وحقك عليا لو ضايقتك
+تعالي نفتكر كل حاجه بينا هنا ونبدء بدايه جديده`,
 
     // --- تاريخ البداية ---
     startDate: "2025-5-28",          // بالصيغة YYYY-MM-DD
@@ -269,7 +270,7 @@
     msg3: "ربنا يخليكي ليا",
 
     // --- زرار message (واتساب أو أي رابط) ---
-    waLink: "https://wa.me/201066025845",
+    waLink: "https://wa.me/201XXXXXXXXX",
 
     // --- الأغنية ---
     songFile:  "song.mp3",            // اسم ملف الأغنية (حطه جنب index.html)
@@ -292,7 +293,7 @@
   <div class="password-label">Password</div>
   <input class="password-input" id="passInput" type="password" placeholder="password" maxlength="20">
   <button class="unlock-btn" onclick="checkPass()">💕 Unlock 💕</button>
-  <div class="wrong-pass" id="wrongPass">❌ الباسورد غلط، حاولي تاني</div>
+  <div class="wrong-pass" id="wrongPass">❌ الباسورد غلط، حاول تاني</div>
 </div>
 
 <!-- PAGE 2: MESSAGE -->
@@ -327,12 +328,12 @@
 <!-- PAGE 4: GALLERY -->
 <div class="page" id="page-gallery">
   <div class="gallery-item">
-    <img id="el-photo1" src="photo1.jpg" alt="صورة">
+    <img id="el-photo1" src="" alt="صورة">
     <div class="gallery-caption" id="el-cap1"></div>
   </div>
   <div class="gallery-heart">❤️</div>
   <div class="gallery-item">
-    <img id="el-photo2" src="photo2.jpg" alt="صورة">
+    <img id="el-photo2" src="" alt="صورة">
     <div class="gallery-caption" id="el-cap2"></div>
   </div>
   <button class="next-btn" onclick="goTo('page-final')" style="margin-top:10px;">💝 next 💝</button>
@@ -368,24 +369,26 @@
 
 <script>
   // ===== APPLY CONFIG =====
-  document.getElementById('el-name').textContent         = CONFIG.name;
-  document.getElementById('el-sub').textContent          = CONFIG.sub;
-  document.getElementById('el-msg').textContent          = CONFIG.loveMsg;
-  document.getElementById('el-startDateDisplay').textContent = CONFIG.startDate.split('-').reverse().join('-');
-  document.getElementById('el-startDateVal').textContent = CONFIG.startDate;
-  document.getElementById('el-photo1').src               = CONFIG.photo1;
-  document.getElementById('el-cap1').textContent         = CONFIG.caption1;
-  document.getElementById('el-photo2').src               = CONFIG.photo2;
-  document.getElementById('el-cap2').textContent         = CONFIG.caption2;
-  document.getElementById('el-f1').textContent           = CONFIG.msg1;
-  document.getElementById('el-f2').textContent           = CONFIG.msg2;
-  document.getElementById('el-f3').textContent           = CONFIG.msg3;
-  document.getElementById('musicTitle').textContent      = CONFIG.songTitle;
-  document.getElementById('audioEl').src                 = CONFIG.songFile;
+  window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('el-name').textContent              = CONFIG.name;
+    document.getElementById('el-sub').textContent               = CONFIG.sub;
+    document.getElementById('el-msg').textContent               = CONFIG.loveMsg;
+    document.getElementById('el-startDateDisplay').textContent  = CONFIG.startDate.split('-').reverse().join('-');
+    document.getElementById('el-startDateVal').textContent      = CONFIG.startDate;
+    document.getElementById('el-photo1').src                    = CONFIG.photo1;
+    document.getElementById('el-cap1').textContent              = CONFIG.caption1;
+    document.getElementById('el-photo2').src                    = CONFIG.photo2;
+    document.getElementById('el-cap2').textContent              = CONFIG.caption2;
+    document.getElementById('el-f1').textContent                = CONFIG.msg1;
+    document.getElementById('el-f2').textContent                = CONFIG.msg2;
+    document.getElementById('el-f3').textContent                = CONFIG.msg3;
+    document.getElementById('musicTitle').textContent           = CONFIG.songTitle;
+    document.getElementById('audioEl').src                      = CONFIG.songFile;
 
-  if (CONFIG.profileImg) {
-    document.getElementById('profilePicEl').innerHTML = `<img src="${CONFIG.profileImg}" alt="">`;
-  }
+    if (CONFIG.profileImg) {
+      document.getElementById('profilePicEl').innerHTML = `<img src="${CONFIG.profileImg}" alt="">`;
+    }
+  });
 
   // ===== FLOATING HEARTS =====
   const emojis = ['❤️','💕','💝','💖','💗','🩷','💓'];
@@ -425,8 +428,16 @@
 
   // ===== COUNTDOWN =====
   function tick() {
-    const diff = Date.now() - new Date(CONFIG.startDate + 'T00:00:00').getTime();
-    if (diff < 0) return;
+    const parts = CONFIG.startDate.split('-');
+    const start = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    const diff = Date.now() - start.getTime();
+    if (diff < 0) {
+      document.getElementById('tDays').textContent  = '000';
+      document.getElementById('tHours').textContent = '00';
+      document.getElementById('tMins').textContent  = '00';
+      document.getElementById('tSecs').textContent  = '00';
+      return;
+    }
     document.getElementById('tDays').textContent  = String(Math.floor(diff/86400000)).padStart(3,'0');
     document.getElementById('tHours').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
     document.getElementById('tMins').textContent  = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
