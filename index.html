@@ -480,7 +480,8 @@
 
   // autoplay on first interaction
   document.addEventListener('click', function startAudio() {
-    audio.play().then(() => {
+    if (audio.paused) {
+      audio.play().then(() => {
         playBtn.textContent = '⏸';
         thumb.classList.add('playing');
       }).catch(()=>{});
