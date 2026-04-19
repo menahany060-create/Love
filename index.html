@@ -1,235 +1,483 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>بن الحشم</title>
-<meta name="description" content="🔥 صحصح بمزاج... قهوتك الصح لكل يوم تقيل! ⚡ كافيين عالي = طاقة أعلى 👌 طعم مظبوط يخليك دايمًا في المود">
-<meta property="og:title" content="☕ بن الحشم">
-<meta property="og:description" content="⚡ طاقة يومك في كوباية ☕ 💥 قهوة تقيلة… مزاج عالي 👌 اختار توليفتك بنفسك وابدأ صح 🚀 ابدأ يومك صح.. وكمل للآخر">
-<meta property="og:image" content="https://your-site.com/coffee.jpg">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="☕ بن الحشم">
-<meta name="twitter:description" content="🔥 صحصح بمزاج... قهوتك الصح لكل يوم تقيل! ⚡ كافيين عالي = طاقة أعلى">
-<meta name="twitter:image" content="https://your-site.com/coffee.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💕 لك وبس</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: #1a0008;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .page {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  .page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .bg {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, #5a0020 0%, #2d0010 40%, #0f0005 100%);
+    z-index: 0;
+  }
+  .hearts-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .heart-particle {
+    position: absolute;
+    bottom: -50px;
+    animation: floatUp linear infinite;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; }
+    10%  { opacity: 0.8; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-110vh) rotate(360deg) scale(1.2); opacity: 0; }
+  }
 
+  /* ---- MUSIC PLAYER ---- */
+  .music-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(30,0,12,0.92);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,100,130,0.25);
+    padding: 10px 16px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    direction: ltr;
+  }
+  .music-thumb {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#c0003a,#5a0020);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    animation: spinThumb 4s linear infinite paused;
+  }
+  .music-thumb.playing { animation-play-state: running; }
+  @keyframes spinThumb { to { transform: rotate(360deg); } }
+  .music-info { flex: 1; overflow: hidden; }
+  .music-title {
+    font-size: 13px; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    direction: rtl;
+  }
+  .music-progress-wrap {
+    height: 3px; background: rgba(255,255,255,0.15);
+    border-radius: 3px; margin-top: 6px; cursor: pointer;
+  }
+  .music-progress-bar {
+    height: 100%; background: #ff3366;
+    border-radius: 3px; width: 0%; transition: width 0.5s linear;
+  }
+  .music-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .ctrl-btn {
+    background: none; border: none; color: #ffb3c1;
+    font-size: 20px; cursor: pointer; padding: 4px;
+    transition: transform 0.15s;
+  }
+  .ctrl-btn:hover { transform: scale(1.2); color: #fff; }
+  .ctrl-btn.play-pause {
+    background: rgba(180,0,60,0.6);
+    border-radius: 50%; width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  /* ---- PAGE 1: LOCK ---- */
+  #page-lock { z-index: 2; padding: 20px; padding-bottom: 80px; }
+  .heart-wrap {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .big-heart {
+    font-size: 260px; line-height: 1;
+    filter: drop-shadow(0 0 30px #ff003366);
+    animation: heartbeat 1.5s ease-in-out infinite;
+    user-select: none;
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+  .heart-content {
+    position: absolute;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    top: 50%; left: 50%; transform: translate(-50%, -52%);
+    width: 200px; text-align: center;
+  }
+  .profile-pic {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.5);
+    object-fit: cover; overflow: hidden;
+    background: #fff2;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
+  .lock-name { font-size: 22px; font-weight: 900; color: #fff; text-shadow: 0 0 10px #ff6680; }
+  .lock-sub { font-size: 13px; color: #ffb3c1; display: flex; align-items: center; gap: 4px; }
+  .password-label { font-size: 13px; color: #ffb3c1; align-self: flex-end; margin-top: 16px; margin-bottom: 4px; }
+  .password-input {
+    width: 260px; padding: 14px 20px; border-radius: 30px; border: none;
+    background: rgba(120,0,40,0.6); color: #fff; font-size: 16px;
+    font-family: 'Tajawal', sans-serif; text-align: center; outline: none;
+    border: 1px solid rgba(255,100,130,0.3); letter-spacing: 4px;
+  }
+  .password-input::placeholder { color: rgba(255,255,255,0.4); letter-spacing: 2px; }
+  .unlock-btn {
+    margin-top: 12px; width: 260px; padding: 14px; border-radius: 30px;
+    border: none; background: linear-gradient(135deg, #c0003a, #8b0030);
+    color: #fff; font-size: 18px; font-family: 'Tajawal', sans-serif;
+    font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(180,0,60,0.5);
+    transition: transform 0.2s;
+  }
+  .unlock-btn:hover { transform: scale(1.03); }
+  .wrong-pass { color: #ff6680; font-size: 13px; margin-top: 6px; opacity: 0; transition: opacity 0.3s; }
+  .wrong-pass.show { opacity: 1; }
+
+  /* ---- PAGE 2: MESSAGE ---- */
+  #page-msg { padding: 30px 20px 90px; z-index: 2; }
+  .msg-card {
+    background: rgba(255,255,255,0.07); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,150,170,0.2); border-radius: 24px;
+    padding: 36px 28px; max-width: 360px; width: 100%; text-align: center;
+  }
+  .msg-emoji { font-size: 44px; margin-bottom: 20px; }
+  .msg-text { font-size: 20px; line-height: 2; color: #ffe8ee; font-weight: 700; white-space: pre-line; }
+  .msg-love { margin-top: 16px; font-size: 15px; color: #ffb3c1; text-align: left; }
+  .next-btn {
+    margin-top: 28px; padding: 14px 50px; border-radius: 30px;
+    border: 1px solid rgba(255,100,130,0.4); background: rgba(120,0,40,0.7);
+    color: #fff; font-size: 17px; font-family: 'Tajawal', sans-serif;
+    font-weight: 700; cursor: pointer; transition: transform 0.2s, background 0.2s;
+  }
+  .next-btn:hover { transform: scale(1.04); background: rgba(180,0,60,0.8); }
+
+  /* ---- PAGE 3: COUNTDOWN ---- */
+  #page-count { padding: 20px 20px 90px; z-index: 2; gap: 20px; }
+  .count-title { font-size: 18px; color: #ffb3c1; display: flex; align-items: center; gap: 6px; }
+  .count-card {
+    background: rgba(255,255,255,0.07); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,150,170,0.2); border-radius: 24px;
+    padding: 28px 20px; max-width: 360px; width: 100%;
+  }
+  .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .timer-box { background: rgba(180,0,60,0.3); border-radius: 12px; padding: 14px 6px; text-align: center; }
+  .timer-num { font-size: 30px; font-weight: 900; color: #fff; line-height: 1; }
+  .timer-label { font-size: 12px; color: #ffb3c1; margin-top: 4px; }
+  .count-sub { text-align: center; font-size: 15px; color: #ffb3c1; margin-top: 8px; }
+  .start-date-card {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,150,170,0.2);
+    border-radius: 20px; padding: 20px 28px; max-width: 360px; width: 100%; text-align: center;
+  }
+  .start-date-title { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+  .start-date-val { font-size: 16px; color: #ffb3c1; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+  /* ---- PAGE 4: GALLERY ---- */
+  #page-gallery { padding: 20px 20px 90px; z-index: 2; gap: 16px; }
+  .gallery-item {
+    max-width: 360px; width: 100%; border-radius: 20px; overflow: hidden;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,150,170,0.2);
+  }
+  .gallery-item img { width: 100%; height: 260px; object-fit: cover; display: block; }
+  .gallery-caption { padding: 12px 16px; font-size: 17px; font-weight: 700; color: #ffe8ee; text-align: center; }
+  .gallery-heart { text-align: center; font-size: 22px; padding: 8px; }
+
+  /* ---- PAGE 5: FINAL ---- */
+  #page-final { padding: 30px 20px 100px; z-index: 2; gap: 20px; }
+  .final-card {
+    background: rgba(255,255,255,0.07); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,150,170,0.2); border-radius: 24px;
+    padding: 32px 28px; max-width: 360px; width: 100%; text-align: right;
+  }
+  .final-item { font-size: 19px; font-weight: 700; color: #ffe8ee; margin-bottom: 22px; line-height: 1.6; }
+  .final-item:last-child { margin-bottom: 0; }
+  .memories-btn {
+    padding: 13px 40px; border-radius: 30px; border: 1px solid rgba(255,100,130,0.4);
+    background: rgba(80,0,25,0.8); color: #fff; font-size: 16px;
+    font-family: 'Tajawal', sans-serif; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; transition: transform 0.2s;
+  }
+  .memories-btn:hover { transform: scale(1.04); }
+  .love-big { font-size: 28px; font-weight: 900; color: #ff6680; display: flex; align-items: center; gap: 6px; justify-content: center; }
+  .msg-final-btn {
+    width: 260px; padding: 15px; border-radius: 30px;
+    background: linear-gradient(135deg, #c0003a, #8b0030);
+    border: none; color: #fff; font-size: 18px;
+    font-family: 'Tajawal', sans-serif; font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(180,0,60,0.5);
+    display: flex; align-items: center; gap: 8px; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .msg-final-btn:hover { transform: scale(1.04); }
+  .lovely-text { font-size: 26px; font-weight: 900; color: #ff6680; display: flex; align-items: center; gap: 8px; }
+
+  .page { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 </head>
-
 <body>
 
-<div class="header">
-  <img class="logo" src="logo.png">
-  <div class="logoText">بن الحشم ☕</div>
+<div class="bg"></div>
+<div class="hearts-container" id="heartsContainer"></div>
 
-  <!-- ✅ زرار المنيو -->
-  <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="القائمة">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
+<!-- ============================================================
+     ✏️  قسم التعديل - غير القيم دي براحتك
+     ============================================================ -->
+<script>
+  const CONFIG = {
+    // --- الصفحة الأولى ---
+    name:      " merna❤️ جاهزه ",          // الاسم جوه القلب
+    sub:        "my everything",      // النص تحت الاسم
+    password:   "2009",               // الباسورد
+    profileImg: "",                   // مسار صورة البروفايل مثلاً: "img/profile.jpg"
 
-  <!-- ✅ المنيو -->
-  <div class="nav-menu" id="navMenu">
-    <a href="#">🏠 الرئيسية</a>
-    <a href="#">☕ المنتجات</a>
-    <a href="#" onclick="openCheckout(); closeMenu()">🛒 اطلب الآن</a>
-    <a href="https://wa.me/201223136302" target="_blank">📞 تواصل معنا</a>
-  </div>
-</div>
+    // --- رسالة الحب ---
+    loveMsg: 'بحبك يكل حاجه في حياتي و عمري م اقدر اعيش من غيرك تعالي نفتكر كل حاجه بينا هنا ونبدء بدايه جديده`,
 
-<h3 class="section-title">🔥 الأكثر مبيعًا</h3>
+    // --- تاريخ البداية ---
+    startDate: "2025-5-28",          // بالصيغة YYYY-MM-DD
 
-<div class="slider-wrapper">
-  <button class="slider-btn left" onclick="moveSlider(-1)">‹</button>
-  <div class="slider" id="slider">
+    // --- الصور ---
+    photo1:    "img/photo1.jpg",      // مسار الصورة الأولى
+    caption1:  "بحبك 💕",
+    photo2:    "img/photo2.jpg",      // مسار الصورة الثانية
+    caption2:  "ربنا يخليكي ليا 💝",
 
-    <div class="slide-card">
-      <span class="badge">🔥</span>
-      <img src="hashm.png">
-      <p>الحشم</p>
-      <select onchange="updatePrice(this)">
-        <option value="125-150"> جرام(125) - 150 جنيه</option>
-        <option value="250-250"> جرام (250)- 250 جنيه</option>
-        <option value="500-350"> جرام(500) - 350 جنيه</option>
-      </select>
-      <button class="neonBtn" onclick="addProduct(this,'الحشم')">إضافة للسلة</button>
-      <button onclick="openStory('الحشم','قوة وكافيين عالي 🔥')">تفاصيل</button>
+    // --- الصفحة الأخيرة ---
+    msg1: "بحبك اوي",
+    msg2: "حقك عليا لو زعلتك 😘",
+    msg3: "ربنا يخليكي ليا",
+
+    // --- زرار message (واتساب أو أي رابط) ---
+    waLink: "https://wa.me/201066025845",
+
+    // --- الأغنية ---
+    songFile:  "song.mp3",            // اسم ملف الأغنية (حطه جنب index.html)
+    songTitle: "باين حبيت - عمرو دياب",
+  };
+</script>
+<!-- ============================================================ -->
+
+
+<!-- PAGE 1: LOCK -->
+<div class="page active" id="page-lock">
+  <div class="heart-wrap">
+    <div class="big-heart">❤️</div>
+    <div class="heart-content">
+      <div class="profile-pic" id="profilePicEl">🤍</div>
+      <div class="lock-name" id="el-name"></div>
+      <div class="lock-sub">🤍 <span id="el-sub"></span></div>
     </div>
+  </div>
+  <div class="password-label">Password</div>
+  <input class="password-input" id="passInput" type="password" placeholder="password" maxlength="20">
+  <button class="unlock-btn" onclick="checkPass()">💕 Unlock 💕</button>
+  <div class="wrong-pass" id="wrongPass">❌ الباسورد غلط، حاولي تاني</div>
+</div>
 
-    <div class="slide-card">
-      <span class="badge">🔥</span>
-      <img src="espresso.png">
-      <p>ESPRESSO</p>
-      <select onchange="updatePrice(this)">
-        <option value="125-150"> جرام(125) - 150 جنيه</option>
-        <option value="250-250"> جرام (250)- 250 جنيه</option>
-        <option value="500-350"> جرام(500) - 350 جنيه</option>
-      </select>
-      <button class="neonBtn" onclick="addProduct(this,'ESPRESSO')">إضافة للسلة</button>
-      <button onclick="openStory('ESPRESSO','جرعة مركزة تعيشك فايق 🔥')">تفاصيل</button>
+<!-- PAGE 2: MESSAGE -->
+<div class="page" id="page-msg">
+  <div class="msg-card">
+    <div class="msg-emoji">😍</div>
+    <div class="msg-text" id="el-msg"></div>
+    <div class="msg-love">loveee youu 🤍</div>
+  </div>
+  <button class="next-btn" onclick="goTo('page-count')">💝 next 💝</button>
+</div>
+
+<!-- PAGE 3: COUNTDOWN -->
+<div class="page" id="page-count">
+  <div class="count-title">💝 سوا من <span id="el-startDateDisplay"></span> 💝</div>
+  <div class="count-card">
+    <div class="timer-grid">
+      <div class="timer-box"><div class="timer-num" id="tDays">000</div><div class="timer-label">يوم</div></div>
+      <div class="timer-box"><div class="timer-num" id="tHours">00</div><div class="timer-label">ساعة</div></div>
+      <div class="timer-box"><div class="timer-num" id="tMins">00</div><div class="timer-label">دقيقة</div></div>
+      <div class="timer-box"><div class="timer-num" id="tSecs">00</div><div class="timer-label">ثانية</div></div>
     </div>
+    <div class="count-sub">❤️ كل ثانية بتعدي وانت في قلبي ❤️</div>
+  </div>
+  <div class="start-date-card">
+    <div class="start-date-title">يوم ما قولتلك بحبك 💕</div>
+    <div class="start-date-val"><span id="el-startDateVal"></span> 📅</div>
+  </div>
+  <button class="next-btn" onclick="goTo('page-gallery')">💝 next 💝</button>
+</div>
 
-    <div class="slide-card">
-      <span class="badge">🔥</span>
-      <img src="sikka.png">
-      <p>ع السكة</p>
-      <select onchange="updatePrice(this)">
-        <option value="125-150"> جرام(125) - 150 جنيه</option>
-        <option value="250-250"> جرام (250)- 250 جنيه</option>
-        <option value="500-350"> جرام(500) - 350 جنيه</option>
-      </select>
-      <button class="neonBtn" onclick="addProduct(this,'السكة')">إضافة للسلة</button>
-      <button onclick="openStory('السكة','تركيز عالي أثناء السفر 🚀')">تفاصيل</button>
+<!-- PAGE 4: GALLERY -->
+<div class="page" id="page-gallery">
+  <div class="gallery-item">
+    <img id="el-photo1" src="photo1.jpg" alt="صورة">
+    <div class="gallery-caption" id="el-cap1"></div>
+  </div>
+  <div class="gallery-heart">❤️</div>
+  <div class="gallery-item">
+    <img id="el-photo2" src="photo2.jpg" alt="صورة">
+    <div class="gallery-caption" id="el-cap2"></div>
+  </div>
+  <button class="next-btn" onclick="goTo('page-final')" style="margin-top:10px;">💝 next 💝</button>
+</div>
+
+<!-- PAGE 5: FINAL -->
+<div class="page" id="page-final">
+  <div class="final-card">
+    <div class="final-item" id="el-f1"></div>
+    <div class="final-item" id="el-f2"></div>
+    <div class="final-item" id="el-f3"></div>
+  </div>
+  <button class="memories-btn" onclick="goTo('page-msg')">memories 🔁</button>
+  <div class="love-big">💕 بحبك 💕</div>
+  <button class="msg-final-btn" onclick="openMsg()">❤️ message ❤️</button>
+  <div class="lovely-text">💕 Lovely 💕</div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<div class="music-bar" id="musicBar">
+  <div class="music-thumb" id="musicThumb">🎵</div>
+  <div class="music-info">
+    <div class="music-title" id="musicTitle"></div>
+    <div class="music-progress-wrap" id="progressWrap">
+      <div class="music-progress-bar" id="progressBar"></div>
     </div>
-
-    <div class="slide-card">
-      <span class="badge">🔥</span>
-      <img src="gad3.png">
-      <p>الجدع</p>
-      <select onchange="updatePrice(this)">
-        <option value="125-150"> جرام(125) - 150 جنيه</option>
-        <option value="250-250"> جرام (250)- 250 جنيه</option>
-        <option value="500-350"> جرام(500) - 350 جنيه</option>
-      </select>
-      <button class="neonBtn" onclick="addProduct(this,'الجدع')">إضافة للسلة</button>
-      <button onclick="openStory('الجدع','خفيف وناعم 😄')">تفاصيل</button>
-    </div>
-
   </div>
-  <button class="slider-btn right" onclick="moveSlider(1)">›</button>
+  <div class="music-controls">
+    <button class="ctrl-btn play-pause" id="playPauseBtn" onclick="togglePlay()">▶</button>
+  </div>
+  <audio id="audioEl" loop></audio>
 </div>
 
-<!-- PRODUCTS -->
-<div class="products">
+<script>
+  // ===== APPLY CONFIG =====
+  document.getElementById('el-name').textContent         = CONFIG.name;
+  document.getElementById('el-sub').textContent          = CONFIG.sub;
+  document.getElementById('el-msg').textContent          = CONFIG.loveMsg;
+  document.getElementById('el-startDateDisplay').textContent = CONFIG.startDate.split('-').reverse().join('-');
+  document.getElementById('el-startDateVal').textContent = CONFIG.startDate;
+  document.getElementById('el-photo1').src               = CONFIG.photo1;
+  document.getElementById('el-cap1').textContent         = CONFIG.caption1;
+  document.getElementById('el-photo2').src               = CONFIG.photo2;
+  document.getElementById('el-cap2').textContent         = CONFIG.caption2;
+  document.getElementById('el-f1').textContent           = CONFIG.msg1;
+  document.getElementById('el-f2').textContent           = CONFIG.msg2;
+  document.getElementById('el-f3').textContent           = CONFIG.msg3;
+  document.getElementById('musicTitle').textContent      = CONFIG.songTitle;
+  document.getElementById('audioEl').src                 = CONFIG.songFile;
 
-  <div class="card top">
-    <img src="hashm.png">
-    <h3>توليفة الحشم</h3>
-    <div class="bar"><div class="fill" data-caffeine="90"><span class="percent">90%</span></div></div>
-    <small>كافيين 90%</small>
-    <button class="neonBtn" onclick="openStory('الحشم','قوة وكافيين عالي 🔥')">القصة</button>
-    <button class="neonBtn" onclick="openSpecs('الحشم','برازيلي + كولومبي')">المواصفات</button>
-    <select onchange="updatePrice(this)">
-      <option value="125-150"> جرام(125) - 150 جنيه</option>
-      <option value="250-250"> جرام (250)- 250 جنيه</option>
-      <option value="500-350"> جرام(500) - 350 جنيه</option>
-    </select>
-    <button class="neonBtn" onclick="addProduct(this,'الحشم')">إضافة للسلة</button>
-  </div>
+  if (CONFIG.profileImg) {
+    document.getElementById('profilePicEl').innerHTML = `<img src="${CONFIG.profileImg}" alt="">`;
+  }
 
-  <div class="card top">
-    <img src="ayoub.png">
-    <h3>توليفة أيوب</h3>
-    <div class="bar"><div class="fill" data-caffeine="65"><span class="percent">65%</span></div></div>
-    <small>كافيين 65%</small>
-    <button class="neonBtn" onclick="openStory('أيوب','الصبر مفتاح الفرج 💪')">القصة</button>
-    <button class="neonBtn" onclick="openSpecs('أيوب','متوازن وخفيف')">المواصفات</button>
-    <select onchange="updatePrice(this)">
-      <option value="125-150"> جرام(125) - 150 جنيه</option>
-      <option value="250-250"> جرام (250)- 250 جنيه</option>
-      <option value="500-350"> جرام(500) - 350 جنيه</option>
-    </select>
-    <button class="neonBtn" onclick="addProduct(this,'أيوب')">إضافة للسلة</button>
-  </div>
+  // ===== FLOATING HEARTS =====
+  const emojis = ['❤️','💕','💝','💖','💗','🩷','💓'];
+  const hc = document.getElementById('heartsContainer');
+  for (let i = 0; i < 20; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart-particle';
+    h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    h.style.left = Math.random()*100 + '%';
+    h.style.fontSize = (12 + Math.random()*18) + 'px';
+    const dur = 6 + Math.random()*9;
+    h.style.animationDuration = dur + 's';
+    h.style.animationDelay = (Math.random()*dur) + 's';
+    hc.appendChild(h);
+  }
 
-  <div class="card top">
-    <img src="sikka.png">
-    <h3>توليفة ع السكة</h3>
-    <div class="bar"><div class="fill" data-caffeine="80"><span class="percent">80%</span></div></div>
-    <small>كافيين 80%</small>
-    <button class="neonBtn" onclick="openStory('السكة','تركيز طويل في السفر 🚀')">القصة</button>
-    <button class="neonBtn" onclick="openSpecs('السكة','مناسبة للسفر')">المواصفات</button>
-    <select onchange="updatePrice(this)">
-      <option value="125-150"> جرام(125) - 150 جنيه</option>
-      <option value="250-250"> جرام (250)- 250 جنيه</option>
-      <option value="500-350"> جرام(500) - 350 جنيه</option>
-    </select>
-    <button class="neonBtn" onclick="addProduct(this,'السكة')">إضافة للسلة</button>
-  </div>
+  // ===== NAVIGATION =====
+  function goTo(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
 
-  <div class="card top">
-    <img src="gad3.png">
-    <h3>توليفة الجدع</h3>
-    <div class="bar"><div class="fill" data-caffeine="50"><span class="percent">50%</span></div></div>
-    <small>كافيين 50%</small>
-    <button class="neonBtn" onclick="openStory('الجدع','للجدعان بس 😄')">القصة</button>
-    <button class="neonBtn" onclick="openSpecs('الجدع','خفيف وناعم')">المواصفات</button>
-    <select onchange="updatePrice(this)">
-      <option value="125-150"> جرام(125) - 150 جنيه</option>
-      <option value="250-250"> جرام (250)- 250 جنيه</option>
-      <option value="500-350"> جرام(500) - 350 جنيه</option>
-    </select>
-    <button class="neonBtn" onclick="addProduct(this,'الجدع')">إضافة للسلة</button>
-  </div>
+  // ===== LOCK =====
+  function checkPass() {
+    if (document.getElementById('passInput').value === CONFIG.password) {
+      goTo('page-msg');
+    } else {
+      const w = document.getElementById('wrongPass');
+      w.classList.add('show');
+      setTimeout(() => w.classList.remove('show'), 2000);
+    }
+  }
+  document.getElementById('passInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPass();
+  });
 
-  <div class="card top">
-    <img src="espresso.png">
-    <h3>ESPRESSO</h3>
-    <div class="bar"><div class="fill" data-caffeine="95"><span class="percent">95%</span></div></div>
-    <small>كافيين 95%</small>
-    <button class="neonBtn" onclick="openStory('ESPRESSO','جرعة كافيين مركزة 🔥 تعيشك فايق على الآخر')">القصة</button>
-    <button class="neonBtn" onclick="openSpecs('ESPRESSO','تحميص داكن + نكهة قوية مركزة')">المواصفات</button>
-    <select onchange="updatePrice(this)">
-      <option value="125-150"> جرام(125) - 150 جنيه</option>
-      <option value="250-250"> جرام (250)- 250 جنيه</option>
-      <option value="500-350"> جرام(500) - 350 جنيه</option>
-    </select>
-    <button class="neonBtn" onclick="addProduct(this,'ESPRESSO')">إضافة للسلة</button>
-  </div>
+  // ===== COUNTDOWN =====
+  function tick() {
+    const diff = Date.now() - new Date(CONFIG.startDate + 'T00:00:00').getTime();
+    if (diff < 0) return;
+    document.getElementById('tDays').textContent  = String(Math.floor(diff/86400000)).padStart(3,'0');
+    document.getElementById('tHours').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('tMins').textContent  = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('tSecs').textContent  = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  }
+  setInterval(tick, 1000); tick();
 
-</div>
+  // ===== MESSAGE BUTTON =====
+  function openMsg() {
+    if (CONFIG.waLink) window.open(CONFIG.waLink, '_blank');
+  }
 
-<!-- CART -->
-<div class="cart">
-  <h3>🛒 السلة</h3>
-  <div id="box"></div>
-  <h4>الإجمالي: <span id="total">0</span></h4>
-  <button class="checkoutBtn" onclick="openCheckout()">تأكيد الطلب</button>
-</div>
+  // ===== MUSIC PLAYER =====
+  const audio = document.getElementById('audioEl');
+  const playBtn = document.getElementById('playPauseBtn');
+  const thumb = document.getElementById('musicThumb');
+  const bar = document.getElementById('progressBar');
 
-<!-- CHECKOUT -->
-<div id="checkout" class="popup" onclick="closePopup()">
-  <div class="popup-content" onclick="event.stopPropagation()">
-    <h3>تأكيد الطلب</h3>
-    <input id="name" placeholder="الاسم">
-    <input id="phone" placeholder="رقم الهاتف" type="tel" inputmode="numeric">
-    <input id="address" placeholder="العنوان">
-    <button class="checkoutBtn" onclick="send()">إرسال واتساب</button>
-  </div>
-</div>
+  function togglePlay() {
+    if (audio.paused) {
+      audio.play().catch(()=>{});
+      playBtn.textContent = '⏸';
+      thumb.classList.add('playing');
+    } else {
+      audio.pause();
+      playBtn.textContent = '▶';
+      thumb.classList.remove('playing');
+    }
+  }
 
-<!-- POPUP -->
-<div id="popup" class="popup" onclick="closePopup()">
-  <div class="popup-content">
-    <h3 id="title"></h3>
-    <p id="text"></p>
-  </div>
-</div>
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      bar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+    }
+  });
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-content">
-    <h3>☕ بن الحشم</h3>
-    ملحوظة: احنا بنستخدم أجود أنواع البن الموجودة في العالم لكن كل توليفة بنسب مختلفه
-    <p>شركة (بن الحشم) التابعه لشركة (سميركو للاستيراد و التصدير) هي شركه اردنية الاصل تأسست عام 1983</p>
-    <p>العنوان: الاردن_السلط_شارع اليرموك</p>
-    <p>الهاتف: 00962799198420</p>
-    <div class="footer-links">
-      <a href="#">الرئيسية</a>
-      <a href="#">المنتجات</a>
-      <a href="#" onclick="openCheckout()">اطلب الآن</a>
-    </div>
-    <p class="copy">© 2026 جميع الحقوق محفوظة - بن الحشم</p>
-  </div>
-</footer>
+  document.getElementById('progressWrap').addEventListener('click', e => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+  });
 
-<div class="floating-cart" onclick="openCart()">
-  🛒 <span id="cartCount">0</span>
-</div>
-
-<script src="script.js"></script>
+  // autoplay on first interaction
+  document.addEventListener('click', function startAudio() {
+    if (audio.paused) {
+      audio.play().then(() => {
+        playBtn.textContent = '⏸';
+        thumb.classList.add('playing');
+      }).catch(()=>{});
+    }
+    document.removeEventListener('click', startAudio);
+  }, { once: true });
+</script>
 </body>
 </html>
